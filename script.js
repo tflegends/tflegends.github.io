@@ -1,11 +1,5 @@
-// This script provides the core functionality for the TFMultiversal Cards Platform.
-// It handles user authentication, dashboard UI, card collection display,
-// and the game's core logic using the LivePolls API.
-
-// LivePolls API base URL
 const API_BASE = 'https://sheets.livepolls.app/api/spreadsheets/3cfe8939-427d-4cde-9bbf-fc71573d8b08';
 
-// Global game state
 let allCards = [];
 let currentUser = null;
 let userCards = [];
@@ -14,7 +8,6 @@ let currentBattle = null;
 let currentBattleInterval = null;
 let dashboardInterval = null;
 
-// --- UI Element Selectors ---
 const authContainer = document.getElementById('auth-container');
 const loginBox = document.getElementById('login-box');
 const signupBox = document.getElementById('signup-box');
@@ -27,7 +20,6 @@ const userNameDisplay = document.getElementById('user-name');
 const userCoinsDisplay = document.getElementById('user-coins');
 const logoutBtn = document.getElementById('logout-btn');
 
-// View selectors
 const viewContents = document.querySelectorAll('.view-content');
 const collectionView = document.getElementById('collection-view');
 const friendsView = document.getElementById('friends-view');
@@ -35,7 +27,6 @@ const leaderboardView = document.getElementById('leaderboard-view');
 const storeView = document.getElementById('store-view');
 const battleView = document.getElementById('battle-view');
 
-// New UI selectors for modal, friend requests, leaderboard, and chat
 const modalBackdrop = document.getElementById('modal-backdrop');
 const modal = document.getElementById('modal');
 const modalContent = document.getElementById('modal-content');
@@ -67,21 +58,17 @@ const endTurnBtn = document.getElementById('end-turn-btn');
 const playerField = document.getElementById('player-field');
 const opponentField = document.getElementById('opponent-field');
 
-// Store page selectors
 const storeItemsGrid = document.getElementById('store-items-grid');
 
-// --- Initialization on Load ---
 document.addEventListener('DOMContentLoaded', () => {
     initApp();
 
-    // Event listeners for view navigation
     if (mainNav) {
         mainNav.addEventListener('click', (e) => {
             if (e.target.tagName === 'A') {
                 e.preventDefault();
                 const view = e.target.dataset.view;
                 showView(view);
-                // Update active nav button
                 document.querySelectorAll('.nav-button').forEach(btn => btn.classList.remove('active'));
                 e.target.classList.add('active');
             }
@@ -97,20 +84,17 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function initApp() {
-    // Attempt to retrieve and parse all cards from the backend
     try {
         const cardsResponse = await fetch(`${API_BASE}/cards`);
         const cardsData = await cardsResponse.json();
         allCards = cardsData.data;
 
-        // Auto-login if a user is stored in local storage
         const savedUser = localStorage.getItem('tfm_user');
         if (savedUser) {
             currentUser = JSON.parse(savedUser);
             await updateOnlineStatus(true);
             loadDashboard();
         } else {
-            // Show the login page by default
             showAuth();
         }
     } catch (error) {
@@ -119,7 +103,6 @@ async function initApp() {
     }
 }
 
-// --- Login/Signup Logic ---
 if (loginForm) {
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -211,7 +194,6 @@ if (logoutBtn) {
     });
 }
 
-// --- Dashboard Logic ---
 function loadDashboard() {
     showDashboard();
     fetchAndUpdateUserData();
@@ -247,7 +229,6 @@ function updateUI() {
     }
 }
 
-// --- Card Collection & Rendering ---
 function renderUserCards() {
     if (!cardCollectionGrid || !currentUser) return;
     const cardIds = currentUser.cards ? currentUser.cards.split(',') : [];
@@ -276,7 +257,6 @@ function createCardElement(card) {
     let defenseValue = parseInt(card.defense);
     let isModified = false;
 
-    // Apply Star multiplier (MTM/MAX)
     if (card.star === 'MTM') {
         attackValue = Math.round(attackValue * 1.25);
         healthValue = Math.round(healthValue * 1.25);
@@ -289,7 +269,6 @@ function createCardElement(card) {
         isModified = true;
     }
     
-    // Apply Bonus multiplier (if any)
     const bonusMultiplier = card.bonus ? parseFloat(card.bonus) : 1;
     if (bonusMultiplier > 1) {
         attackValue = Math.round(attackValue * bonusMultiplier);
@@ -316,7 +295,6 @@ function createCardElement(card) {
     return cardDiv;
 }
 
-// --- Friend Requests Logic ---
 if (friendRequestForm) {
     friendRequestForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -342,7 +320,6 @@ if (friendRequestForm) {
                 return;
             }
 
-            // Check if a request has already been sent or if they are already friends
             const requestingUsers = friendUser.requesting ? friendUser.requesting.split(',') : [];
             const currentUserFriends = currentUser.friends ? currentUser.friends.split(',') : [];
             if (requestingUsers.includes(currentUser.username) || currentUserFriends.includes(friendUser.username)) {
@@ -457,8 +434,6 @@ async function handleFriendRequestAction(e) {
     }
 }
 
-
-// --- Leaderboard Logic & Rendering ---
 async function renderLeaderboard() {
     if (!leaderboardBody) return;
     try {
@@ -491,7 +466,6 @@ async function renderLeaderboard() {
     }
 }
 
-// --- Chat Logic & Rendering ---
 function renderFriendsList() {
     if (!friendsList) return;
     const friends = currentUser.friends ? currentUser.friends.split(',') : [];
@@ -589,7 +563,6 @@ if (chatForm) {
     });
 }
 
-// --- Battle Logic & Rendering ---
 function loadBattle() {
     if (!battleArea) return;
     battleArea.classList.add('hidden');
@@ -635,7 +608,6 @@ async function startBattle(opponent) {
         return;
     }
     
-    // Shuffle and deal 4 cards to each player
     const shuffledPlayerCards = [...playerCardIds].sort(() => 0.5 - Math.random()).slice(0, 4);
     const shuffledOpponentCards = [...opponentCardIds].sort(() => 0.5 - Math.random()).slice(0, 4);
 
@@ -711,18 +683,13 @@ function renderBattleUI() {
     const player = isPlayer1 ? 'player1' : 'player2';
     const opponent = isPlayer1 ? 'player2' : 'player1';
 
-    // Update names and health
     playerName.textContent = isPlayer1 ? currentBattle.player1 : currentBattle.player2;
     opponentName.textContent = isPlayer1 ? currentBattle.player2 : currentBattle.player1;
-    
     playerHealthValue.textContent = currentBattle[`${player}health`];
     opponentHealthValue.textContent = currentBattle[`${opponent}health`];
-
-    // Update health bars
     playerHealthBar.style.width = `${currentBattle[`${player}health`]}%`;
     opponentHealthBar.style.width = `${currentBattle[`${opponent}health`]}%`;
 
-    // Render player's hand
     playerHand.innerHTML = '';
     const playerCardIds = currentBattle[`${player}rem`].split(',');
     playerCardIds.forEach(cardId => {
@@ -734,7 +701,6 @@ function renderBattleUI() {
         }
     });
 
-    // Render opponent's hand (as back-of-card placeholders)
     opponentHand.innerHTML = '';
     const opponentCardIds = currentBattle[`${opponent}rem`].split(',');
     opponentCardIds.forEach(() => {
@@ -743,7 +709,6 @@ function renderBattleUI() {
         opponentHand.appendChild(cardBack);
     });
 
-    // Render active cards on the field
     playerField.innerHTML = '';
     opponentField.innerHTML = '';
 
@@ -764,10 +729,7 @@ function renderBattleUI() {
         }
     }
     
-    // Update battle log
     battleLog.textContent = currentBattle.log;
-
-    // Enable/disable 'End Turn' button
     if (currentBattle.turn === currentUser.username) {
         endTurnBtn.classList.remove('hidden');
         playerHand.classList.add('active-turn');
@@ -785,18 +747,13 @@ async function handleCardPlay(cardId) {
     const isPlayer1 = currentBattle.player1 === currentUser.username;
     const player = isPlayer1 ? 'player1' : 'player2';
     const opponent = isPlayer1 ? 'player2' : 'player1';
-
-    // If a card is already on the field, replace it
     let updatedPlayerCards = currentBattle[`${player}rem`].split(',').filter(id => id !== cardId);
     let newCardOnField = cardId;
 
-    // If there was a previous card on the field, add it back to the hand
     const oldCardOnField = currentBattle[`${player}cardsonfield`];
     if (oldCardOnField) {
         updatedPlayerCards.push(oldCardOnField);
     }
-    
-    // Update the battle record to reflect the card being played
     const updatedBattlePayload = [{
         id: currentBattle.id,
         [`${player}rem`]: updatedPlayerCards.join(','),
@@ -811,7 +768,6 @@ async function handleCardPlay(cardId) {
             body: JSON.stringify(updatedBattlePayload)
         });
         
-        // Re-fetch to update the UI
         pollBattleStatus();
 
     } catch (error) {
@@ -905,7 +861,6 @@ async function endBattle(winner) {
             body: JSON.stringify(updatedBattlePayload)
         });
         
-        // Update user stats
         if (winner !== 'Draw' && winner === currentUser.username) {
             await updateUserStats(true);
         } else if (winner !== 'Draw') {
@@ -927,10 +882,9 @@ async function updateUserStats(isWin) {
 
     if (isWin) {
         wins += 1;
-        coins += 20; // Reward for winning
+        coins += 20;
     } else {
         losses += 1;
-        coins += 5; // Small consolation prize
     }
 
     const updatedUserPayload = [{
@@ -948,12 +902,10 @@ async function updateUserStats(isWin) {
     fetchAndUpdateUserData();
 }
 
-// --- Store Logic & Rendering ---
 function renderStore() {
     if (!storeItemsGrid) return;
     storeItemsGrid.innerHTML = '';
     
-    // Define the store's "booster packs" or items
     const storeItems = [
         { id: 'pack1', name: 'Rookie Pack', price: 50, cards: 3, description: 'A basic pack with 3 random cards.' },
         { id: 'pack2', name: 'Veteran Pack', price: 100, cards: 5, description: 'A larger pack with 5 random cards.' }
@@ -1018,7 +970,6 @@ async function handlePurchase(e) {
     }
 }
 
-// --- Helper Functions ---
 function getRandomCards(count) {
     const shuffled = [...allCards].sort(() => 0.5 - Math.random());
     return shuffled.slice(0, count);
@@ -1045,7 +996,6 @@ function generateUUID() {
     });
 }
 
-// --- UI Toggle Functions ---
 function toggleAuth(type) {
     if (type === 'signup') {
         loginBox.classList.add('hidden');
@@ -1070,8 +1020,6 @@ function showView(view) {
     viewContents.forEach(vc => vc.classList.add('hidden'));
     document.getElementById(`${view}-view`).classList.remove('hidden');
 }
-
-// --- Custom Modal Functions ---
 function showModal(content) {
     if (!modal || !modalBackdrop || !modalCloseBtn) return;
     modalContent.innerHTML = content;

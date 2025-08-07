@@ -43,12 +43,23 @@ h1, h2, h3 {
 .active { display: flex !important; }
 
 /* Authentication Section */
+/* Update the main auth-container to use flexbox */
 #auth-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%;
     min-height: 100vh;
+}
+
+/* New style for the form row */
+.auth-form-row {
+    display: flex;
+    justify-content: center;
+    gap: 30px; /* Adjust spacing between the forms */
+    width: 100%;
+    max-width: 900px; /* You can adjust the max width as needed */
+    padding: 20px;
+    flex-wrap: wrap; /* Allows forms to wrap on smaller screens */
 }
 
 .form-container {
@@ -61,6 +72,7 @@ h1, h2, h3 {
     text-align: center;
     border: 2px solid var(--highlight);
     animation: fadeIn 0.5s ease-out;
+    flex: 1;
 }
 
 .form-container h2 {

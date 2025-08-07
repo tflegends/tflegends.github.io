@@ -116,7 +116,6 @@ signupForm.addEventListener('submit', async (e) => {
 
         if (postResponse.ok) {
             alert('Account created successfully! You can now log in.');
-            showLogin();
         } else {
             alert('Failed to create account. Please try again.');
         }

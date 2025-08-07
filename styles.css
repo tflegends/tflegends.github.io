@@ -175,6 +175,12 @@ body {
     overflow-y: auto;
 }
 
+.view-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
 /* Card Collection */
 #card-collection-grid {
     display: grid;
@@ -192,6 +198,8 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
     transition: transform 0.2s, box-shadow 0.2s;
     cursor: pointer;
+    position: relative;
+    overflow: hidden;
 }
 
 .card:hover {
@@ -262,6 +270,30 @@ body {
     0% { transform: scale(1); opacity: 1; }
     50% { transform: scale(1.1); opacity: 0.8; }
     100% { transform: scale(1); opacity: 1; }
+}
+
+/* Store Cards */
+.store-card {
+    background-color: #2c3e50;
+    border: 2px solid var(--accent-color);
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.store-card h3 {
+    color: #ffd700;
+}
+
+.store-card-price {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    margin: 10px 0;
+    font-size: 1.2rem;
+    font-weight: bold;
 }
 
 /* Buttons */
@@ -348,14 +380,21 @@ body {
 }
 
 /* Friend Requests */
-#friend-request-view h2, #leaderboard-view h2, #chat-view h2 {
-    font-family: var(--font-family-title);
-    font-size: 2.5rem;
-    color: var(--accent-color);
+.friend-request-container, .friend-request-form-container {
+    padding: 20px;
+    background-color: #2c3e50;
+    border-radius: 10px;
     margin-bottom: 20px;
 }
 
-#friend-request-list {
+.friend-request-container h3, .friend-request-form-container h3, .chat-container h3, #leaderboard-view h2, #store-view h2 {
+    font-family: var(--font-family-title);
+    font-size: 1.8rem;
+    color: var(--accent-color);
+    margin-bottom: 15px;
+}
+
+#friend-requests-list {
     display: flex;
     flex-direction: column;
     gap: 15px;
@@ -365,7 +404,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #2c3e50;
+    background-color: #1a2a4b;
     padding: 15px;
     border-radius: 8px;
 }
@@ -431,11 +470,17 @@ body {
     overflow: hidden;
 }
 
-#friends-list {
+#friends-list-panel {
     background-color: #2c3e50;
     padding: 15px;
     border-right: 1px solid #4a5468;
     overflow-y: auto;
+}
+
+#friends-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }
 
 .friend-item {

@@ -320,17 +320,20 @@ if (friendRequestForm) {
                 return;
             }
 
-            const requestingUsers = friendUser.requesting ? friendUser.requesting.split(',') : [];
+            const requestingUsers = currentUser.friendreq ? currentUser.friendreq.split(',') : [];
             const currentUserFriends = currentUser.friends ? currentUser.friends.split(',') : [];
             if (requestingUsers.includes(currentUser.username) || currentUserFriends.includes(friendUser.username)) {
                 showMessage(`You have already sent a request to or are friends with '${friendUsername}'.`, true);
                 return;
             }
 
-            const updatedRequesting = friendUser.requesting ? `${friendUser.requesting},${currentUser.username}` : currentUser.username;
+            // Change this line to use the current user's ID
+            const updatedRequesting = friendUser.friendreq ? `${friendUser.friendreq},${currentUser.id}` : currentUser.id;
+            
             const updatePayload = [{
                 id: friendUser.id,
-                requesting: updatedRequesting
+                // The new column name should be `friendreq`
+                friendreq: updatedRequesting
             }];
 
             const putResponse = await fetch(`${API_BASE}/users`, {
@@ -362,17 +365,23 @@ function renderFriendRequests() {
         return;
     }
 
-    requestingUsers.forEach(username => {
-        const requestDiv = document.createElement('div');
-        requestDiv.className = 'friend-request';
-        requestDiv.innerHTML = `
-            <span>${username}</span>
-            <div class="friend-request-actions">
-                <button class="accept-btn" data-username="${username}">Accept</button>
-                <button class="decline-btn" data-username="${username}">Decline</button>
-            </div>
-        `;
-        friendRequestsList.appendChild(requestDiv);
+    // Modify the forEach loop to use the user ID to find the username for display
+    requestingUsers.forEach(userId => {
+        // Find the user object by ID from the global user list
+        const requestingUser = usersData.data.find(u => u.id === userId);
+        if (requestingUser) {
+            // Use the found user's username for display
+            const requestDiv = document.createElement('div');
+            requestDiv.className = 'friend-request';
+            requestDiv.innerHTML = `
+                <span>${requestingUser.username}</span>
+                <div class="friend-request-actions">
+                    <button class="accept-btn" data-id="${userId}">Accept</button>
+                    <button class="decline-btn" data-id="${userId}">Decline</button>
+                </div>
+            `;
+            friendRequestsList.appendChild(requestDiv);
+        }
     });
 
     friendRequestsList.querySelectorAll('.accept-btn').forEach(button => {
@@ -385,7 +394,9 @@ function renderFriendRequests() {
 
 async function handleFriendRequestAction(e) {
     const action = e.target.textContent;
-    const friendUsername = e.target.dataset.username;
+    const friendUserId = e.target.dataset.id;
+
+    const friendUser = usersData.data.find(u => u.id === friendUserId);
 
     try {
         const usersResponse = await fetch(`${API_BASE}/users`);
@@ -400,15 +411,32 @@ async function handleFriendRequestAction(e) {
         }];
 
         if (action === 'Accept') {
-            let updatedFriends = currentUser.friends ? `${currentUser.friends},${friendUsername}` : friendUsername;
-            let friendUpdatedFriends = friendUser.friends ? `${friendUser.friends},${currentUser.username}` : friendUser.username;
+            // Update the `friendreq` column for the current user to remove the ID
+            let updatedFriendReq = currentUser.friendreq.split(',').filter(id => id !== friendUserId).join(',');
+            // Update the current user's friends with the new ID
+            let updatedFriends = currentUser.friends ? `${currentUser.friends},${friendUserId}` : friendUserId;
             
-            updatePayload[0].friends = updatedFriends;
-            
-            const friendUpdatePayload = [{
-                id: friendUser.id,
-                friends: friendUpdatedFriends
+            const updatePayload = [{
+                id: currentUser.id,
+                friendreq: updatedFriendReq,
+                friends: updatedFriends
             }];
+
+            if (action === 'Accept') {
+                // Update the other user's friends list with the current user's ID
+                let friendUpdatedFriends = friendUser.friends ? `${friendUser.friends},${currentUser.id}` : currentUser.id;
+                
+                const friendUpdatePayload = [{
+                    id: friendUser.id,
+                    friends: friendUpdatedFriends
+                }];
+            
+                await fetch(`${API_BASE}/users`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(friendUpdatePayload)
+                });
+            }
 
             await fetch(`${API_BASE}/users`, {
                 method: 'PUT',

@@ -906,30 +906,40 @@ function renderStore() {
     if (!storeItemsGrid) return;
     storeItemsGrid.innerHTML = '';
     
+    // Define all the store items
     const storeItems = [
-        { id: 'pack1', name: 'Rookie Pack', price: 50, cards: 3, description: 'A basic pack with 3 random cards.' },
-        { id: 'pack2', name: 'Veteran Pack', price: 100, cards: 5, description: 'A larger pack with 5 random cards.' }
+        { id: 'pack1', name: 'Rookie Pack', price: 50, cards: 3, description: 'A basic pack with 3 random cards.', image: 'https://placehold.co/200x300/34495e/ecf0f1?text=Rookie+Pack' },
+        { id: 'pack2', name: 'Elite Pack', price: 150, cards: 5, description: 'A larger pack with 5 random cards, with a higher chance for rare cards.', image: 'https://placehold.co/200x300/e67e22/fdfcfc?text=Elite+Pack' },
+        { id: 'pack3', name: 'Legendary Pack', price: 400, cards: 8, description: 'An ultimate pack with 8 random cards, guaranteeing at least one legendary.', image: 'https://placehold.co/200x300/c0392b/fdfcfc?text=Legendary+Pack' },
+        { id: 'pack4', name: 'Mega Pack', price: 1000, cards: 15, description: 'The ultimate deal with 15 cards! Great for filling out your collection.', image: 'https://placehold.co/200x300/8e44ad/fdfcfc?text=Mega+Pack' }
     ];
 
+    // Create and append a card for each item
     storeItems.forEach(item => {
         const itemDiv = document.createElement('div');
-        itemDiv.className = 'store-card';
+        itemDiv.className = 'store-card p-6 rounded-lg shadow-lg flex flex-col items-center text-center';
         itemDiv.innerHTML = `
-            <h3>${item.name}</h3>
-            <p>${item.description}</p>
-            <div class="store-card-price">
-                <span>${item.price}</span><div class="coin-icon"></div>
+            <img src="${item.image}" alt="${item.name}" class="w-32 h-48 object-cover rounded-lg mb-4">
+            <h3 class="text-2xl font-bold text-[#fcd34d]">${item.name}</h3>
+            <p class="text-sm text-gray-400 my-2">${item.description}</p>
+            <div class="store-card-price flex items-center justify-center my-4">
+                <span class="text-2xl font-bold text-white">${item.price}</span>
+                <div class="coin-icon w-8 h-8 ml-2"></div>
             </div>
-            <button class="cta-button buy-btn" data-id="${item.id}" data-price="${item.price}" data-cards="${item.cards}">Buy</button>
+            <button class="cta-button buy-btn w-full py-3 px-6 rounded-full" data-id="${item.id}" data-price="${item.price}" data-cards="${item.cards}">
+                Buy
+            </button>
         `;
         storeItemsGrid.appendChild(itemDiv);
     });
 
+    // Attach event listeners to all 'Buy' buttons
     document.querySelectorAll('.buy-btn').forEach(button => {
         button.addEventListener('click', handlePurchase);
     });
 }
 
+// Handle the purchase logic
 async function handlePurchase(e) {
     const itemPrice = parseInt(e.target.dataset.price);
     const numberOfCards = parseInt(e.target.dataset.cards);
@@ -952,6 +962,7 @@ async function handlePurchase(e) {
             coins: updatedCoins
         }];
         
+        // Send the updated user data to the API
         const putResponse = await fetch(`${API_BASE}/users`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
@@ -960,6 +971,7 @@ async function handlePurchase(e) {
 
         if (putResponse.ok) {
             showMessage(`Purchase successful! You received ${numberOfCards} new cards.`);
+            // Refresh user data to update the UI
             fetchAndUpdateUserData();
         } else {
             showMessage('Purchase failed. Please try again.', true);
@@ -970,7 +982,10 @@ async function handlePurchase(e) {
     }
 }
 
+// Get a random number of cards from the allCards array
 function getRandomCards(count) {
+    if (!allCards || allCards.length === 0) return [];
+    // Shuffle the cards and take the first 'count' cards
     const shuffled = [...allCards].sort(() => 0.5 - Math.random());
     return shuffled.slice(0, count);
 }

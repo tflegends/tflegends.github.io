@@ -967,7 +967,6 @@ function renderStore() {
     });
 }
 
-// Handle the purchase logic
 async function handlePurchase(e) {
     const itemPrice = parseInt(e.target.dataset.price);
     const numberOfCards = parseInt(e.target.dataset.cards);
@@ -978,10 +977,13 @@ async function handlePurchase(e) {
     }
 
     try {
+        // Get new random cards
         const newCards = getRandomCards(numberOfCards);
         const newCardIds = newCards.map(c => c.id);
         const currentCardIds = currentUser.cards ? currentUser.cards.split(',') : [];
         const updatedCardIds = [...currentCardIds, ...newCardIds].join(',');
+        
+        // Deduct coins
         const updatedCoins = parseInt(currentUser.coins) - itemPrice;
 
         const updatePayload = [{

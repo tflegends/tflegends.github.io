@@ -1,3 +1,7 @@
+// This script provides the core functionality for the TFMultiversal Cards Platform.
+// It handles user authentication, dashboard UI, card collection display,
+// and the game's core logic using the LivePolls API.
+
 // LivePolls API base URL
 const API_BASE = 'https://sheets.livepolls.app/api/spreadsheets/3cfe8939-427d-4cde-9bbf-fc71573d8b08';
 
@@ -22,6 +26,13 @@ const userNameDisplay = document.getElementById('user-name');
 const userCoinsDisplay = document.getElementById('user-coins');
 const logoutBtn = document.getElementById('logout-btn');
 
+// New UI selectors for modal and friend requests
+const modalBackdrop = document.getElementById('modal-backdrop');
+const modal = document.getElementById('modal');
+const modalContent = document.getElementById('modal-content');
+const modalCloseBtn = document.getElementById('modal-close-btn');
+const friendRequestsList = document.getElementById('friend-requests-list');
+
 // --- Initialization on Load ---
 document.addEventListener('DOMContentLoaded', () => {
     initApp();
@@ -38,14 +49,15 @@ async function initApp() {
         const savedUser = localStorage.getItem('tfm_user');
         if (savedUser) {
             currentUser = JSON.parse(savedUser);
+            await updateOnlineStatus(true);
             await loadDashboard();
         } else {
             // Show the login page by default
-            authContainer.classList.remove('hidden');
+            showAuth();
         }
     } catch (error) {
         console.error('Failed to load card data:', error);
-        alert('Failed to connect to the game server. Please try again later.');
+        showMessage('Failed to connect to the game server. Please try again later.', true);
     }
 }
 
@@ -66,11 +78,11 @@ loginForm.addEventListener('submit', async (e) => {
             await updateOnlineStatus(true);
             await loadDashboard();
         } else {
-            alert('Invalid username or password.');
+            showMessage('Invalid username or password.', true);
         }
     } catch (error) {
         console.error('Login error:', error);
-        alert('An error occurred during login. Please try again.');
+        showMessage('An error occurred during login. Please try again.', true);
     }
 });
 
@@ -80,7 +92,7 @@ signupForm.addEventListener('submit', async (e) => {
     const newPassword = document.getElementById('signup-password').value;
 
     if (!newUsername || !newPassword) {
-        return alert('Please enter both a username and password.');
+        return showMessage('Please enter both a username and password.', true);
     }
 
     try {
@@ -88,7 +100,7 @@ signupForm.addEventListener('submit', async (e) => {
         const usersData = await usersResponse.json();
 
         if (usersData.data.some(u => u.username === newUsername)) {
-            return alert('This username is already taken. Please choose another.');
+            return showMessage('This username is already taken. Please choose another.', true);
         }
 
         // Get 4 random cards for the new user
@@ -115,13 +127,13 @@ signupForm.addEventListener('submit', async (e) => {
         });
 
         if (postResponse.ok) {
-            alert('Account created successfully! You can now log in.');
+            showMessage('Account created successfully! You can now log in.');
         } else {
-            alert('Failed to create account. Please try again.');
+            showMessage('Failed to create account. Please try again.', true);
         }
     } catch (error) {
         console.error('Signup error:', error);
-        alert('An error occurred during signup. Please try again.');
+        showMessage('An error occurred during signup. Please try again.', true);
     }
 });
 
@@ -129,19 +141,16 @@ logoutBtn.addEventListener('click', async () => {
     await updateOnlineStatus(false);
     localStorage.removeItem('tfm_user');
     currentUser = null;
-    dashboardContainer.classList.add('hidden');
-    authContainer.classList.remove('hidden');
-    // Reload the page to reset the state
-    window.location.reload(); 
+    showAuth();
 });
 
 // --- Dashboard Logic ---
 async function loadDashboard() {
-    authContainer.classList.add('hidden');
-    dashboardContainer.classList.remove('hidden');
+    showDashboard();
     await fetchAndUpdateUserData();
     renderUserCards();
     updateUI();
+    renderFriendRequests();
     
     // Set up a refresh interval to poll for updates
     setInterval(fetchAndUpdateUserData, 5000); 
@@ -151,13 +160,15 @@ async function fetchAndUpdateUserData() {
     try {
         const usersResponse = await fetch(`${API_BASE}/users`);
         const usersData = await usersResponse.json();
-        const updatedUser = usersData.data.find(u => u.username === currentUser.username);
+        const updatedUser = usersData.data.find(u => u.id === currentUser.id); // Use ID for unique identification
 
         if (updatedUser) {
+            // Update the user data from the backend
             currentUser = updatedUser;
             localStorage.setItem('tfm_user', JSON.stringify(currentUser));
             updateUI();
             renderUserCards();
+            renderFriendRequests();
         }
     } catch (error) {
         console.error('Failed to fetch user data:', error);
@@ -209,11 +220,19 @@ function createCardElement(card) {
     return cardDiv;
 }
 
+// --- Friend Requests Logic ---
+function renderFriendRequests() {
+    // This is a placeholder. You'll need to implement logic to
+    // fetch friend requests from the API and render them here.
+    // For now, it just displays a message.
+    friendRequestsList.innerHTML = '<p class="empty-message">You have no new friend requests.</p>';
+}
+
 // --- Store Logic ---
 buyCardBtn.addEventListener('click', async () => {
     const cost = 50; 
     if (currentUser.coins < cost) {
-        alert("You don't have enough coins!");
+        showMessage("You don't have enough coins!", true);
         return;
     }
     
@@ -255,18 +274,18 @@ buyCardBtn.addEventListener('click', async () => {
             updateUI();
             renderUserCards();
         } else {
-            alert('Failed to purchase card.');
+            showMessage('Failed to purchase card.', true);
         }
     } catch (error) {
         console.error('Purchase error:', error);
-        alert('An error occurred during your purchase.');
+        showMessage('An error occurred during your purchase.', true);
     }
 });
 
 // --- Navigation Logic ---
 mainNav.addEventListener('click', (e) => {
     if (e.target.tagName === 'BUTTON') {
-        // Remove 'active' class from all buttons
+        // Remove 'active' class from all in-page buttons
         mainNav.querySelectorAll('.nav-button').forEach(btn => btn.classList.remove('active'));
         // Add 'active' to the clicked button
         e.target.classList.add('active');
@@ -307,10 +326,38 @@ function updateOnlineStatus(isOnline) {
     }).catch(console.error);
 }
 
-// A simple UUID generator for new users, as LivePolls API might not generate it automatically.
 function generateUUID() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-      return v.toString(16);
+        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
     });
+}
+
+// --- UI Toggle Functions ---
+function showAuth() {
+    authContainer.classList.remove('hidden');
+    dashboardContainer.classList.add('hidden');
+}
+
+function showDashboard() {
+    authContainer.classList.add('hidden');
+    dashboardContainer.classList.remove('hidden');
+}
+
+// --- Custom Modal Functions ---
+function showModal(content) {
+    modalContent.innerHTML = content;
+    modal.classList.remove('hidden');
+    modalBackdrop.classList.remove('hidden');
+}
+
+function closeModal() {
+    modal.classList.add('hidden');
+    modalBackdrop.classList.add('hidden');
+}
+
+// Show a message in a custom modal instead of an alert()
+function showMessage(message, isError = false) {
+    let content = `<p class="modal-message ${isError ? 'error-message' : ''}">${message}</p>`;
+    showModal(content);
 }

@@ -156,7 +156,7 @@ if (signupForm) {
                 username: newUsername,
                 password: newPassword,
                 cards: cardIds,
-                coins: 0,
+                coins: 10,
                 online: "TRUE",
                 wins: 0,
                 losses: 0,

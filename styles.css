@@ -252,6 +252,8 @@ body {
   background-color: var(--primary-bg);
   padding: 10px;
   border-radius: 8px;
+  /* Updated gap for more spacing */
+  gap: 30px;
 }
 
 .stat {

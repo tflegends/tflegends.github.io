@@ -5,14 +5,28 @@
 :root {
   --primary-bg: #1a1a2e;
   --secondary-bg: #162447;
-  --accent-color: #0ff;
+  --accent-color: #0ff; /* Updated to a cyan color as requested */
   --text-color: #e5e5e5;
   --border-color: #6c757d;
   --font-family-title: 'Bebas Neue', sans-serif;
   --font-family-body: 'Orbitron', sans-serif;
-  --blue-glow-color: rgba(22, 102, 219, 0.5); /* Variable for the blue glow */
-  --blue-glow-hover-color: rgba(22, 102, 219, 0.8);
-  --blue-text-glow: #1980e6; /* Variable for the blue text glow */
+
+  /* Faction Glow Colors */
+  --autobot-glow-color: #007bff;
+  --decepticon-glow-color: #dc3545;
+  --maximal-glow-color: #28a745;
+  --predacon-glow-color: #6f42c1;
+
+  /* Button and Title Colors */
+  --btn-primary-bg: #1980e6;
+  --btn-primary-hover-bg: #1565c0;
+  --btn-primary-shadow: #0d47a1;
+  --btn-secondary-bg: #34495e;
+  --btn-secondary-hover-bg: #4a627a;
+  --btn-secondary-shadow: #212c3b;
+
+  /* Text Glows */
+  --blue-text-glow: rgba(25, 128, 230, 0.7);
 }
 
 * {
@@ -115,6 +129,8 @@ body {
   font-family: var(--font-family-title);
   font-size: 2rem;
   color: var(--accent-color);
+  /* Added blue glow to the main title */
+  text-shadow: 0 0 10px var(--blue-text-glow), 0 0 20px var(--blue-text-glow);
 }
 
 .header-right {
@@ -170,9 +186,10 @@ body {
   text-transform: uppercase;
 }
 
+/* Updated active and hover state with a darker blue */
 .nav-button:hover,
 .nav-button.active {
-  background-color: var(--accent-color);
+  background-color: var(--btn-primary-bg);
   color: #fff;
 }
 
@@ -200,16 +217,17 @@ body {
   border: 2px solid #238636;
   border-radius: 1rem;
   padding: 1rem;
-  box-shadow: 0 0 15px 5px var(--blue-glow-color); /* The blue outer glow effect */
+  box-shadow: 0 0 15px 5px #007bff; /* Default glow for cards */
   transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
   cursor: pointer;
   position: relative;
   overflow: hidden;
+  text-align: center;
 }
 
 .card:hover {
   transform: translateY(-5px) scale(1.03);
-  box-shadow: 0 0 25px 10px var(--blue-glow-hover-color);
+  box-shadow: 0 0 25px 10px var(--autobot-glow-color); /* Updated hover to match faction */
 }
 
 .card-img {
@@ -224,7 +242,7 @@ body {
   font-size: 1.5rem;
   color: var(--accent-color);
   margin-bottom: 10px;
-  text-shadow: 0 0 5px var(--blue-text-glow); /* Blue text glow effect */
+  text-shadow: 0 0 5px var(--blue-text-glow);
 }
 
 .card-stats {
@@ -250,21 +268,48 @@ body {
   color: var(--border-color);
 }
 
-/* Reduced font size for the numbers and added blue glow */
 .stat-value {
   font-size: 1rem;
   font-weight: bold;
   color: var(--text-color);
-  text-shadow: 0 0 5px var(--blue-text-glow); /* Blue text glow effect */
+  text-shadow: 0 0 5px var(--blue-text-glow);
 }
 
-/* Faction-specific styles */
+/* Faction-specific styles with glows */
 .faction-autobot {
-  border-color: #007bff;
+  border-color: var(--autobot-glow-color);
+  box-shadow: 0 0 15px 5px var(--autobot-glow-color);
+}
+
+.faction-autobot:hover {
+  box-shadow: 0 0 25px 10px var(--autobot-glow-color);
 }
 
 .faction-decepticon {
-  border-color: #dc3545;
+  border-color: var(--decepticon-glow-color);
+  box-shadow: 0 0 15px 5px var(--decepticon-glow-color);
+}
+
+.faction-decepticon:hover {
+  box-shadow: 0 0 25px 10px var(--decepticon-glow-color);
+}
+
+.faction-maximal {
+  border-color: var(--maximal-glow-color);
+  box-shadow: 0 0 15px 5px var(--maximal-glow-color);
+}
+
+.faction-maximal:hover {
+  box-shadow: 0 0 25px 10px var(--maximal-glow-color);
+}
+
+.faction-predacon {
+  border-color: var(--predacon-glow-color);
+  box-shadow: 0 0 15px 5px var(--predacon-glow-color);
+}
+
+.faction-predacon:hover {
+  box-shadow: 0 0 25px 10px var(--predacon-glow-color);
 }
 
 /* Modifier highlight */
@@ -317,28 +362,30 @@ body {
   letter-spacing: 1px;
 }
 
+/* Updated cta-button to a darker blue */
 .cta-button {
-  background-color: var(--accent-color);
+  background-color: var(--btn-primary-bg);
   color: #fff;
-  box-shadow: 0 3px 0 #b32a0c;
+  box-shadow: 0 3px 0 var(--btn-primary-shadow);
 }
 
 .cta-button:hover {
-  background-color: #c7370e;
+  background-color: var(--btn-primary-hover-bg);
   transform: translateY(-2px);
-  box-shadow: 0 5px 0 #b32a0c;
+  box-shadow: 0 5px 0 var(--btn-primary-shadow);
 }
 
+/* Kept the secondary button style for contrast */
 .secondary-button {
-  background-color: #34495e;
+  background-color: var(--btn-secondary-bg);
   color: var(--text-color);
-  box-shadow: 0 3px 0 #212c3b;
+  box-shadow: 0 3px 0 var(--btn-secondary-shadow);
 }
 
 .secondary-button:hover {
-  background-color: #4a627a;
+  background-color: var(--btn-secondary-hover-bg);
   transform: translateY(-2px);
-  box-shadow: 0 5px 0 #212c3b;
+  box-shadow: 0 5px 0 var(--btn-secondary-shadow);
 }
 
 /* Modal */

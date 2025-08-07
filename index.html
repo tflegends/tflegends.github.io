@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TFMultiversal Cards Platform</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Bebas+Neue&display=swap" rel="stylesheet" />
+    <script src="script.js" defer></script>
+</head>
+<body>
+
+    <div id="auth-container">
+        <div id="login-box" class="form-container active">
+            <h1 class="logo">TFMultiversal</h1>
+            <h2>Login</h2>
+            <form id="login-form">
+                <div class="input-group">
+                    <label for="login-username">Username</label>
+                    <input type="text" id="login-username" required autocomplete="off" />
+                </div>
+                <div class="input-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" required autocomplete="off" />
+                </div>
+                <button type="submit" class="cta-button">Engage</button>
+            </form>
+            <p>
+                New here? <a href="#" onclick="showSignup()">Create an account</a>
+            </p>
+        </div>
+
+        <div id="signup-box" class="form-container">
+            <h1 class="logo">TFMultiversal</h1>
+            <h2>Sign Up</h2>
+            <form id="signup-form">
+                <div class="input-group">
+                    <label for="signup-username">New Username</label>
+                    <input type="text" id="signup-username" required autocomplete="off" />
+                </div>
+                <div class="input-group">
+                    <label for="signup-password">New Password</label>
+                    <input type="password" id="signup-password" required autocomplete="off" />
+                </div>
+                <button type="submit" class="cta-button">Transform & Roll Out!</button>
+            </form>
+            <p>
+                Already a bot? <a href="#" onclick="showLogin()">Back to Login</a>
+            </p>
+        </div>
+    </div>
+
+    <div id="dashboard-container" class="hidden">
+        <header id="main-header">
+            <div class="header-left">
+                <h1 class="logo">TFMultiversal</h1>
+            </div>
+            <div class="header-right">
+                <div id="user-info">
+                    <span id="welcome-message">Welcome,</span>
+                    <span id="user-name"></span>
+                </div>
+                <div class="currency-display">
+                    <span class="coin-icon"></span>
+                    <span id="user-coins">0</span>
+                </div>
+                <button id="logout-btn" class="secondary-button">Logout</button>
+            </div>
+        </header>
+
+        <nav id="main-nav">
+            <button class="nav-button active" data-view="collection">Collection</button>
+            <button class="nav-button" data-view="store">Store</button>
+            <button class="nav-button" data-view="battle">Battle</button>
+            <button class="nav-button" data-view="chat">Chat</button>
+            <button class="nav-button" data-view="leaderboard">Leaderboard</button>
+        </nav>
+
+        <main id="main-content">
+            <section id="collection-view" class="content-view active-view">
+                <h2>Your Card Collection</h2>
+                <div id="card-collection-grid" class="card-grid">
+                    </div>
+            </section>
+
+            <section id="store-view" class="content-view">
+                <h2>Energon Store</h2>
+                <p>Buy a random card for <span id="store-cost">50</span> coins.</p>
+                <button id="buy-card-btn" class="cta-button">Buy Card</button>
+                <div id="new-card-notification" class="notification"></div>
+            </section>
+
+            <section id="battle-view" class="content-view">
+                <h2>Battle Arena</h2>
+                <div class="battle-options">
+                    <button id="cpu-match-btn" class="cta-button">CPU Match</button>
+                    <button id="online-match-btn" class="cta-button">Random Opponent</button>
+                </div>
+                <p>WIP: Battle logic and UI will be added here.</p>
+            </section>
+
+            <section id="chat-view" class="content-view">
+                <h2>Chat</h2>
+                <p>WIP: Chat functionality will be built here.</p>
+            </section>
+
+            <section id="leaderboard-view" class="content-view">
+                <h2>Leaderboard</h2>
+                <p>WIP: Leaderboard will be displayed here.</p>
+            </section>
+        </main>
+    </div>
+
+    <div id="modal-backdrop" class="hidden"></div>
+    <div id="modal" class="hidden">
+        <button id="modal-close-btn" class="close-btn">&times;</button>
+        <div id="modal-content"></div>
+    </div>
+</body>
+</html>

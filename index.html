@@ -1,117 +1,184 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TFMultiversal Cards Platform</title>
-    <link rel="stylesheet" href="styles.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Bebas+Neue&display=swap" rel="stylesheet" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TFMultiversal Cards</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <!-- Login/Signup Section -->
+    <!-- Authentication Section -->
     <div id="auth-container">
-        <!-- Wrapper to display forms in a row -->
-        <div class="auth-form-row">
-            <!-- The login box is now always visible -->
-            <div id="login-box" class="form-container">
-                <h1 class="logo">TFMultiversal</h1>
-                <h2>Login</h2>
-                <form id="login-form">
-                    <div class="input-group">
-                        <label for="login-username">Username</label>
-                        <input type="text" id="login-username" required autocomplete="off" />
-                    </div>
-                    <div class="input-group">
-                        <label for="login-password">Password</label>
-                        <input type="password" id="login-password" required autocomplete="off" />
-                    </div>
-                    <button type="submit" class="cta-button">Engage</button>
-                </form>
-            </div>
-
-            <!-- The signup box is also now always visible -->
-            <div id="signup-box" class="form-container">
-                <h1 class="logo">TFMultiversal</h1>
-                <h2>Sign Up</h2>
-                <form id="signup-form">
-                    <div class="input-group">
-                        <label for="signup-username">New Username</label>
-                        <input type="text" id="signup-username" required autocomplete="off" />
-                    </div>
-                    <div class="input-group">
-                        <label for="signup-password">New Password</label>
-                        <input type="password" id="signup-password" required autocomplete="off" />
-                    </div>
-                    <button type="submit" class="cta-button">Transform & Roll Out!</button>
-                </form>
-            </div>
+        <!-- Login Box -->
+        <div id="login-box" class="auth-box">
+            <h2>Login</h2>
+            <form id="login-form">
+                <input type="text" id="login-username" placeholder="Username" required>
+                <input type="password" id="login-password" placeholder="Password" required>
+                <button type="submit" class="cta-button">Login</button>
+            </form>
+            <p class="toggle-link" onclick="toggleAuth('signup')">Don't have an account? Sign up</p>
+        </div>
+        <!-- Signup Box -->
+        <div id="signup-box" class="auth-box hidden">
+            <h2>Signup</h2>
+            <form id="signup-form">
+                <input type="text" id="signup-username" placeholder="New Username" required>
+                <input type="password" id="signup-password" placeholder="New Password" required>
+                <button type="submit" class="cta-button">Create Account</button>
+            </form>
+            <p class="toggle-link" onclick="toggleAuth('login')">Already have an account? Login</p>
         </div>
     </div>
 
-    <!-- Dashboard Section -->
+    <!-- Main Dashboard Section -->
     <div id="dashboard-container" class="hidden">
         <header id="main-header">
-            <div class="header-left">
-                <h1 class="logo">TFMultiversal</h1>
-            </div>
+            <h1 class="logo">TFMultiversal</h1>
             <div class="header-right">
                 <div id="user-info">
-                    <span id="welcome-message">Welcome,</span>
-                    <span id="user-name"></span>
-                </div>
-                <div class="currency-display">
-                    <span class="coin-icon"></span>
-                    <span id="user-coins">0</span>
+                    <span id="welcome-message">Hello, <span id="user-name"></span>!</span>
+                    <div class="currency-display">
+                        <span id="user-coins">0</span>
+                        <div class="coin-icon"></div>
+                    </div>
                 </div>
                 <button id="logout-btn" class="secondary-button">Logout</button>
             </div>
         </header>
 
         <nav id="main-nav">
-            <button class="nav-button active" data-view="collection">Collection</button>
-            <a href="battle.html" class="nav-button">Battle</a>
-            <a href="chat.html" class="nav-button">Chat</a>
-            <a href="leaderboard.html" class="nav-button">Leaderboard</a>
-            <a href="store.html" class="nav-button">Store</a>
+            <a href="#" class="nav-button active" data-view="collection">My Collection</a>
+            <a href="#" class="nav-button" data-view="friends">Friends</a>
+            <a href="#" class="nav-button" data-view="leaderboard">Leaderboard</a>
+            <a href="#" class="nav-button" data-view="store">Store</a>
+            <a href="#" class="nav-button" data-view="battle">Battle</a>
         </nav>
 
         <main id="main-content">
-            <section id="collection-view" class="content-view active-view">
-                <h2>Your Card Collection</h2>
-                <div id="card-collection-grid" class="card-grid">
-                    <!-- User's cards will be dynamically inserted here by script.js -->
+            <!-- Card Collection View -->
+            <div id="collection-view" class="view-content">
+                <h2>My Card Collection</h2>
+                <div id="card-collection-grid">
+                    <!-- Cards will be dynamically inserted here by JavaScript -->
                 </div>
-            </section>
+            </div>
 
-            <section id="friend-requests-view">
-                <h2>Friend Requests</h2>
-                <div id="friend-requests-list">
-                    <p class="empty-message">You have no new friend requests.</p>
-                    <!-- Friend requests will be dynamically inserted here -->
-                </div>
-            </section>
-
-            <!-- New section for making a friend request -->
-            <section id="send-friend-request-view">
-                <h2>Send a Friend Request</h2>
-                <form id="friend-request-form">
-                    <div class="input-group">
-                        <label for="friend-username">Friend's Username</label>
-                        <input type="text" id="friend-username" required autocomplete="off" />
+            <!-- Friends & Chat View -->
+            <div id="friends-view" class="view-content hidden">
+                <div class="friend-request-container">
+                    <h3>Friend Requests</h3>
+                    <div id="friend-requests-list">
+                        <!-- Friend requests will be dynamically inserted here -->
                     </div>
-                    <button type="submit" class="cta-button">Send Request</button>
-                </form>
-            </section>
+                </div>
+                <div class="friend-request-form-container">
+                    <h3>Send a Request</h3>
+                    <form id="friend-request-form">
+                        <input type="text" id="friend-username" placeholder="Username to add" required>
+                        <button type="submit" class="cta-button">Send Request</button>
+                    </form>
+                </div>
+                <div class="chat-container">
+                    <div id="friends-list-panel">
+                        <h3>My Friends</h3>
+                        <div id="friends-list">
+                            <!-- Friends will be dynamically inserted here -->
+                        </div>
+                    </div>
+                    <div id="chat-window-container">
+                        <div id="chat-header">
+                            <h3 id="current-chat-friend">Select a friend to chat</h3>
+                        </div>
+                        <div id="chat-messages">
+                            <!-- Chat messages will be dynamically inserted here -->
+                        </div>
+                        <form id="chat-form">
+                            <input type="text" id="message-input" placeholder="Type a message..." required>
+                            <button type="submit" class="cta-button">Send</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Leaderboard View -->
+            <div id="leaderboard-view" class="view-content hidden">
+                <h2>Leaderboard</h2>
+                <table id="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Username</th>
+                            <th>Wins</th>
+                            <th>Losses</th>
+                            <th>Win Rate</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-body">
+                        <!-- Leaderboard rows will be dynamically inserted here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Store View -->
+            <div id="store-view" class="view-content hidden">
+                <h2>The Energon Store</h2>
+                <div id="store-items-grid">
+                    <!-- Store items will be dynamically inserted here -->
+                </div>
+            </div>
+
+            <!-- Battle View -->
+            <div id="battle-view" class="view-content hidden">
+                <h2>Battle Arena</h2>
+                <div id="battle-search">
+                    <button id="find-battle-btn" class="cta-button">Find Opponent</button>
+                    <p id="battle-status"></p>
+                </div>
+                <div id="battle-area" class="hidden">
+                    <div class="player-info opponent">
+                        <h3 id="opponent-name">Opponent</h3>
+                        <div class="health-bar-container">
+                            <div id="opponent-health-bar" class="health-bar" style="width: 100%;"></div>
+                            <span id="opponent-health-value">100</span>
+                        </div>
+                    </div>
+                    <div id="opponent-hand" class="card-hand">
+                        <!-- Opponent's card backs will be here -->
+                    </div>
+                    <div id="game-field">
+                        <div id="opponent-field" class="card-field"></div>
+                        <div id="player-field" class="card-field"></div>
+                    </div>
+                    <div id="player-hand" class="card-hand">
+                        <!-- Player's cards will be here -->
+                    </div>
+                    <div class="player-info player">
+                        <h3 id="player-name">Player</h3>
+                        <div class="health-bar-container">
+                            <div id="player-health-bar" class="health-bar" style="width: 100%;"></div>
+                            <span id="player-health-value">100</span>
+                        </div>
+                    </div>
+                    <p id="battle-log"></p>
+                    <div id="battle-actions">
+                        <button id="end-turn-btn" class="cta-button hidden">End Turn</button>
+                    </div>
+                </div>
+            </div>
+
         </main>
     </div>
 
+    <!-- Modal for Messages -->
     <div id="modal-backdrop" class="hidden"></div>
     <div id="modal" class="hidden">
         <button id="modal-close-btn" class="close-btn">&times;</button>
         <div id="modal-content"></div>
     </div>
-    
-    <script src="script.js" defer></script>
+
+    <script src="script.js"></script>
 </body>
 </html>

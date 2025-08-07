@@ -126,16 +126,6 @@ signupForm.addEventListener('submit', async (e) => {
     }
 });
 
-function showSignup() {
-    loginBox.classList.remove('active');
-    signupBox.classList.add('active');
-}
-
-function showLogin() {
-    signupBox.classList.remove('active');
-    loginBox.classList.add('active');
-}
-
 logoutBtn.addEventListener('click', async () => {
     await updateOnlineStatus(false);
     localStorage.removeItem('tfm_user');

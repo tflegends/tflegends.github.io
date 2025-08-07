@@ -6,12 +6,14 @@
     <title>TFMultiversal Cards Platform</title>
     <link rel="stylesheet" href="styles.css" />
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Bebas+Neue&display=swap" rel="stylesheet" />
-    <script src="script.js" defer></script>
 </head>
 <body>
-    
+
+    <!-- Login/Signup Section -->
     <div id="auth-container">
+        <!-- Wrapper to display forms in a row -->
         <div class="auth-form-row">
+            <!-- The login box is now always visible -->
             <div id="login-box" class="form-container">
                 <h1 class="logo">TFMultiversal</h1>
                 <h2>Login</h2>
@@ -26,11 +28,9 @@
                     </div>
                     <button type="submit" class="cta-button">Engage</button>
                 </form>
-                <p>
-                    New here? <a href="#" onclick="showSignup()">Create an account</a>
-                </p>
             </div>
 
+            <!-- The signup box is also now always visible -->
             <div id="signup-box" class="form-container">
                 <h1 class="logo">TFMultiversal</h1>
                 <h2>Sign Up</h2>
@@ -45,13 +45,11 @@
                     </div>
                     <button type="submit" class="cta-button">Transform & Roll Out!</button>
                 </form>
-                <p>
-                    Already a bot? <a href="#" onclick="showLogin()">Back to Login</a>
-                </p>
             </div>
         </div>
     </div>
 
+    <!-- Dashboard Section -->
     <div id="dashboard-container" class="hidden">
         <header id="main-header">
             <div class="header-left">
@@ -71,44 +69,37 @@
         </header>
 
         <nav id="main-nav">
+            <!-- The following links will be to separate pages -->
+            <a href="battle.html" class="nav-button">Battle</a>
+            <a href="chat.html" class="nav-button">Chat</a>
+            <a href="leaderboard.html" class="nav-button">Leaderboard</a>
+            
+            <!-- These are still in-page views -->
             <button class="nav-button active" data-view="collection">Collection</button>
             <button class="nav-button" data-view="store">Store</button>
-            <button class="nav-button" data-view="battle">Battle</button>
-            <button class="nav-button" data-view="chat">Chat</button>
-            <button class="nav-button" data-view="leaderboard">Leaderboard</button>
         </nav>
 
         <main id="main-content">
             <section id="collection-view" class="content-view active-view">
                 <h2>Your Card Collection</h2>
                 <div id="card-collection-grid" class="card-grid">
-                    </div>
+                    <!-- User's cards will be dynamically inserted here by script.js -->
+                </div>
             </section>
 
-            <section id="store-view" class="content-view">
+            <section id="store-view" class="content-view hidden">
                 <h2>Energon Store</h2>
                 <p>Buy a random card for <span id="store-cost">50</span> coins.</p>
                 <button id="buy-card-btn" class="cta-button">Buy Card</button>
                 <div id="new-card-notification" class="notification"></div>
             </section>
 
-            <section id="battle-view" class="content-view">
-                <h2>Battle Arena</h2>
-                <div class="battle-options">
-                    <button id="cpu-match-btn" class="cta-button">CPU Match</button>
-                    <button id="online-match-btn" class="cta-button">Random Opponent</button>
+            <section id="friend-requests-view">
+                <h2>Friend Requests</h2>
+                <div id="friend-requests-list">
+                    <p class="empty-message">You have no new friend requests.</p>
+                    <!-- Friend requests will be dynamically inserted here -->
                 </div>
-                <p>WIP: Battle logic and UI will be added here.</p>
-            </section>
-
-            <section id="chat-view" class="content-view">
-                <h2>Chat</h2>
-                <p>WIP: Chat functionality will be built here.</p>
-            </section>
-
-            <section id="leaderboard-view" class="content-view">
-                <h2>Leaderboard</h2>
-                <p>WIP: Leaderboard will be displayed here.</p>
             </section>
         </main>
     </div>
@@ -118,5 +109,7 @@
         <button id="modal-close-btn" class="close-btn">&times;</button>
         <div id="modal-content"></div>
     </div>
+    
+    <script src="script.js" defer></script>
 </body>
 </html>

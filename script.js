@@ -936,10 +936,30 @@ function renderStore() {
     
     // Define all the store items
     const storeItems = [
-        { id: 'pack1', name: 'Rookie Pack', price: 50, cards: 3, description: 'A basic pack with 3 random cards.', image: 'https://placehold.co/200x300/34495e/ecf0f1?text=Rookie+Pack' },
-        { id: 'pack2', name: 'Elite Pack', price: 150, cards: 5, description: 'A larger pack with 5 random cards, with a higher chance for rare cards.', image: 'https://placehold.co/200x300/e67e22/fdfcfc?text=Elite+Pack' },
-        { id: 'pack3', name: 'Legendary Pack', price: 400, cards: 8, description: 'An ultimate pack with 8 random cards, guaranteeing at least one legendary.', image: 'https://placehold.co/200x300/c0392b/fdfcfc?text=Legendary+Pack' },
-        { id: 'pack4', name: 'Mega Pack', price: 1000, cards: 15, description: 'The ultimate deal with 15 cards! Great for filling out your collection.', image: 'https://placehold.co/200x300/8e44ad/fdfcfc?text=Mega+Pack' }
+        { id: 'pack1', name: 'Solo Spark', price: 10, cards: 1, description: 'A single card to kick off your collection.', image: 'https://placehold.co/200x300/2c3e50/ecf0f1?text=Solo+Spark' },
+        { id: 'pack2', name: 'Duo Draw', price: 20, cards: 2, description: 'Two shots at greatness.', image: 'https://placehold.co/200x300/34495e/ecf0f1?text=Duo+Draw' },
+        { id: 'pack3', name: 'Rookie Pack', price: 50, cards: 5, description: 'Five cards to jumpstart your team.', image: 'https://placehold.co/200x300/1abc9c/fdfcfc?text=Rookie+Pack' },
+        { id: 'pack4', name: 'Basic Booster', price: 100, cards: 10, description: 'A solid 10-card booster for quick gains.', image: 'https://placehold.co/200x300/3498db/fdfcfc?text=Basic+Booster' },
+        { id: 'pack5', name: 'Starter Surge', price: 150, cards: 15, description: 'Fifteen cards to fill in your gaps.', image: 'https://placehold.co/200x300/e67e22/fdfcfc?text=Starter+Surge' },
+        { id: 'pack6', name: 'Advanced Pull', price: 200, cards: 20, description: 'A big step up with 20 cards.', image: 'https://placehold.co/200x300/c0392b/fdfcfc?text=Advanced+Pull' },
+        { id: 'pack7', name: 'Battle Kit', price: 250, cards: 25, description: 'A combat-ready loadout with 25 cards.', image: 'https://placehold.co/200x300/7f8c8d/fdfcfc?text=Battle+Kit' },
+        { id: 'pack8', name: 'Combat Pack', price: 300, cards: 30, description: 'Thirty cards to boost your offensive.', image: 'https://placehold.co/200x300/8e44ad/fdfcfc?text=Combat+Pack' },
+        { id: 'pack9', name: 'Heavy Load', price: 350, cards: 35, description: 'Overload your deck with 35 cards.', image: 'https://placehold.co/200x300/f1c40f/fdfcfc?text=Heavy+Load' },
+        { id: 'pack10', name: 'Elite Pull', price: 300, cards: 30, description: 'Elite-level power with 30 cards.', image: 'https://placehold.co/200x300/16a085/fdfcfc?text=Elite+Pull' },
+        { id: 'pack11', name: 'Strategic Stack', price: 450, cards: 45, description: 'Forty-five curated chances to win.', image: 'https://placehold.co/200x300/27ae60/fdfcfc?text=Strategic+Stack' },
+        { id: 'pack12', name: 'Fifty Fury', price: 500, cards: 50, description: 'Fifty cards with explosive potential.', image: 'https://placehold.co/200x300/e74c3c/fdfcfc?text=Fifty+Fury' },
+        { id: 'pack13', name: 'Sixty Surge', price: 600, cards: 60, description: 'Sixty-card power surge.', image: 'https://placehold.co/200x300/9b59b6/fdfcfc?text=Sixty+Surge' },
+        { id: 'pack14', name: 'Seventy Storm', price: 700, cards: 70, description: 'Seventy powerful pulls await.', image: 'https://placehold.co/200x300/f39c12/fdfcfc?text=Seventy+Storm' },
+        { id: 'pack15', name: 'Seventy-Five Set', price: 750, cards: 75, description: 'A towering pack of seventy-five.', image: 'https://placehold.co/200x300/d35400/fdfcfc?text=75+Set' },
+        { id: 'pack16', name: 'Eighty Edge', price: 800, cards: 80, description: 'Eighty cards sharpen your chances.', image: 'https://placehold.co/200x300/2980b9/fdfcfc?text=Eighty+Edge' },
+        { id: 'pack17', name: 'Mega Boost', price: 850, cards: 85, description: 'Mega boost with 85 chances to shine.', image: 'https://placehold.co/200x300/1abc9c/fdfcfc?text=Mega+Boost' },
+        { id: 'pack18', name: 'Ninety Nine', price: 900, cards: 90, description: 'Massive 90-card pack, pure value.', image: 'https://placehold.co/200x300/2ecc71/fdfcfc?text=Ninety+Nine' },
+        { id: 'pack19', name: 'Ninety-Five Strike', price: 950, cards: 95, description: 'Heavy 95-card payload.', image: 'https://placehold.co/200x300/34495e/fdfcfc?text=95+Strike' },
+        { id: 'pack20', name: 'Century Pack', price: 1000, cards: 100, description: 'A full century — 100 card bundle.', image: 'https://placehold.co/200x300/1abc9c/fdfcfc?text=Century+Pack' },
+        { id: 'pack21', name: 'Titan Pull', price: 1100, cards: 110, description: 'Titanic 110-card drop.', image: 'https://placehold.co/200x300/e67e22/fdfcfc?text=Titan+Pull' },
+        { id: 'pack22', name: 'Vault of 115', price: 1150, cards: 115, description: 'A massive vault of 115 cards.', image: 'https://placehold.co/200x300/2c3e50/fdfcfc?text=Vault+115' },
+        { id: 'pack23', name: 'Omega Drop', price: 1250, cards: 125, description: 'The biggest drop yet — 125 powerful cards.', image: 'https://placehold.co/200x300/8e44ad/fdfcfc?text=Omega+Drop' },
+        { id: 'pack24', name: 'Infinity Vault', price: 1600, cards: 150, description: 'The ultimate 150-card vault. Top-tier only.', image: 'https://placehold.co/200x300/1f618d/fdfcfc?text=Infinity+Vault' }
     ];
 
     // Create and append a card for each item

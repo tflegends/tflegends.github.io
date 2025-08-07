@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TFMultiversal Cards Platform - Store</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Bebas+Neue&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+    <!-- Dashboard Section -->
+    <div id="dashboard-container">
+        <header id="main-header">
+            <div class="header-left">
+                <h1 class="logo">TFMultiversal</h1>
+            </div>
+            <div class="header-right">
+                <div id="user-info">
+                    <span id="welcome-message">Welcome,</span>
+                    <span id="user-name"></span>
+                </div>
+                <div class="currency-display">
+                    <span class="coin-icon"></span>
+                    <span id="user-coins">0</span>
+                </div>
+                <button id="logout-btn" class="secondary-button">Logout</button>
+            </div>
+        </header>
+
+        <nav id="main-nav">
+            <!-- This is the only in-page view now -->
+            <a href="index.html" class="nav-button">Collection</a>
+            
+            <!-- The following links will be to separate pages -->
+            <a href="battle.html" class="nav-button">Battle</a>
+            <a href="chat.html" class="nav-button">Chat</a>
+            <a href="leaderboard.html" class="nav-button">Leaderboard</a>
+            <a href="store.html" class="nav-button active">Store</a>
+        </nav>
+
+        <main id="main-content">
+            <section id="store-view" class="content-view active-view">
+                <h2>Energon Store</h2>
+                <p>Buy a random card for <span id="store-cost">50</span> coins.</p>
+                <button id="buy-card-btn" class="cta-button">Buy Card</button>
+                <div id="new-card-notification" class="notification"></div>
+            </section>
+        </main>
+    </div>
+
+    <div id="modal-backdrop" class="hidden"></div>
+    <div id="modal" class="hidden">
+        <button id="modal-close-btn" class="close-btn">&times;</button>
+        <div id="modal-content"></div>
+    </div>
+    
+    <script src="script.js" defer></script>
+</body>
+</html>

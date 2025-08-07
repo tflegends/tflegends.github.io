@@ -5,7 +5,7 @@
 :root {
   --primary-bg: #1a1a2e;
   --secondary-bg: #162447;
-  --accent-color: #e43d12;
+  --accent-color: #0ff;
   --text-color: #e5e5e5;
   --border-color: #6c757d;
   --font-family-title: 'Bebas Neue', sans-serif;
@@ -252,7 +252,7 @@ body {
 
 /* Reduced font size for the numbers and added blue glow */
 .stat-value {
-  font-size: 0.5rem;
+  font-size: 1rem;
   font-weight: bold;
   color: var(--text-color);
   text-shadow: 0 0 5px var(--blue-text-glow); /* Blue text glow effect */

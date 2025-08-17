@@ -327,7 +327,6 @@ if (friendRequestForm) {
                 return;
             }
 
-            // Change this line to use the current user's ID
             const updatedRequesting = friendUser.friendreq ? `${friendUser.friendreq},${currentUser.id}` : currentUser.id;
             
             const updatePayload = [{
@@ -357,7 +356,8 @@ if (friendRequestForm) {
 
 function renderFriendRequests() {
     if (!friendRequestsList) return;
-    const requestingUsers = currentUser.requesting ? currentUser.requesting.split(',') : [];
+    // The column in the spreadsheet is named 'friendreq', not 'requesting'.
+    const requestingUsers = currentUser.friendreq ? currentUser.friendreq.split(',') : [];
     friendRequestsList.innerHTML = '';
 
     if (requestingUsers.length === 0) {
@@ -365,96 +365,87 @@ function renderFriendRequests() {
         return;
     }
 
-    // Modify the forEach loop to use the user ID to find the username for display
-    requestingUsers.forEach(userId => {
-        // Find the user object by ID from the global user list
-        const requestingUser = usersData.data.find(u => u.id === userId);
-        if (requestingUser) {
-            // Use the found user's username for display
-            const requestDiv = document.createElement('div');
-            requestDiv.className = 'friend-request';
-            requestDiv.innerHTML = `
-                <span>${requestingUser.username}</span>
-                <div class="friend-request-actions">
-                    <button class="accept-btn" data-id="${userId}">Accept</button>
-                    <button class="decline-btn" data-id="${userId}">Decline</button>
-                </div>
-            `;
-            friendRequestsList.appendChild(requestDiv);
-        }
-    });
+    // Fetch all users to get their usernames from the IDs
+    fetch(`${API_BASE}/users`)
+        .then(res => res.json())
+        .then(usersData => {
+            requestingUsers.forEach(userId => {
+                const requestingUser = usersData.data.find(u => u.id === userId);
+                if (requestingUser) {
+                    const requestDiv = document.createElement('div');
+                    requestDiv.className = 'friend-request';
+                    requestDiv.innerHTML = `
+                        <span>${requestingUser.username}</span>
+                        <div class="friend-request-actions">
+                            <button class="accept-btn" data-id="${userId}">Accept</button>
+                            <button class="decline-btn" data-id="${userId}">Decline</button>
+                        </div>
+                    `;
+                    friendRequestsList.appendChild(requestDiv);
+                }
+            });
 
-    friendRequestsList.querySelectorAll('.accept-btn').forEach(button => {
-        button.addEventListener('click', handleFriendRequestAction);
-    });
-    friendRequestsList.querySelectorAll('.decline-btn').forEach(button => {
-        button.addEventListener('click', handleFriendRequestAction);
-    });
+            friendRequestsList.querySelectorAll('.accept-btn').forEach(button => {
+                button.addEventListener('click', handleFriendRequestAction);
+            });
+            friendRequestsList.querySelectorAll('.decline-btn').forEach(button => {
+                button.addEventListener('click', handleFriendRequestAction);
+            });
+        })
+        .catch(error => {
+            console.error('Failed to fetch users for friend requests:', error);
+            showMessage('Failed to load friend requests.', true);
+        });
 }
 
 async function handleFriendRequestAction(e) {
     const action = e.target.textContent;
     const friendUserId = e.target.dataset.id;
 
-    const friendUser = usersData.data.find(u => u.id === friendUserId);
-
     try {
+        // Fetch users to get the user object by ID
         const usersResponse = await fetch(`${API_BASE}/users`);
         const usersData = await usersResponse.json();
-        const friendUser = usersData.data.find(u => u.username === friendUsername);
-        
-        let updatedRequesting = currentUser.requesting.split(',').filter(u => u !== friendUsername).join(',');
-        
-        const updatePayload = [{
+        const friendUser = usersData.data.find(u => u.id === friendUserId);
+
+        if (!friendUser) {
+            return showMessage('User not found.', true);
+        }
+
+        // Always remove the request from the current user's 'friendreq' list
+        let updatedRequesting = currentUser.friendreq.split(',').filter(id => id !== friendUserId).join(',');
+
+        // This is the payload to update the current user
+        const currentUserUpdatePayload = [{
             id: currentUser.id,
-            requesting: updatedRequesting
+            friendreq: updatedRequesting
         }];
 
         if (action === 'Accept') {
-            // Update the `friendreq` column for the current user to remove the ID
-            let updatedFriendReq = currentUser.friendreq.split(',').filter(id => id !== friendUserId).join(',');
-            // Update the current user's friends with the new ID
+            // Add the friend's ID to the current user's friends list
             let updatedFriends = currentUser.friends ? `${currentUser.friends},${friendUserId}` : friendUserId;
-            
-            const updatePayload = [{
-                id: currentUser.id,
-                friendreq: updatedFriendReq,
-                friends: updatedFriends
+            currentUserUpdatePayload[0].friends = updatedFriends;
+
+            // Add the current user's ID to the friend's friends list
+            let friendUpdatedFriends = friendUser.friends ? `${friendUser.friends},${currentUser.id}` : currentUser.id;
+            const friendUserUpdatePayload = [{
+                id: friendUser.id,
+                friends: friendUpdatedFriends
             }];
 
-            if (action === 'Accept') {
-                // Update the other user's friends list with the current user's ID
-                let friendUpdatedFriends = friendUser.friends ? `${friendUser.friends},${currentUser.id}` : currentUser.id;
-                
-                const friendUpdatePayload = [{
-                    id: friendUser.id,
-                    friends: friendUpdatedFriends
-                }];
-            
-                await fetch(`${API_BASE}/users`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(friendUpdatePayload)
-                });
-            }
+            // Send both database updates
+            await fetch(`${API_BASE}/users`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(currentUserUpdatePayload) });
+            await fetch(`${API_BASE}/users`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(friendUserUpdatePayload) });
 
-            await fetch(`${API_BASE}/users`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(friendUpdatePayload)
-            });
+            showMessage(`You are now friends with ${friendUser.username}!`);
 
-            showMessage(`You are now friends with ${friendUsername}!`);
         } else if (action === 'Decline') {
-            showMessage(`You have declined the request from ${friendUsername}.`);
+            // Only update the current user to remove the request
+            await fetch(`${API_BASE}/users`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(currentUserUpdatePayload) });
+            showMessage(`You have declined the request from ${friendUser.username}.`);
         }
 
-        await fetch(`${API_BASE}/users`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(updatePayload)
-        });
-
+        // A final update to ensure UI is fresh
         fetchAndUpdateUserData();
     } catch (error) {
         console.error(`Error handling friend request (${action}):`, error);

@@ -327,7 +327,8 @@ if (friendRequestForm) {
                 return;
             }
 
-            const updatedRequesting = friendUser.friendreq ? `${friendUser.friendreq},${currentUser.id}` : currentUser.id;
+            // This is the correct way to build the payload for a new friend request.
+            const updatedRequesting = friendUser.requesting ? `${friendUser.requesting},${currentUser.id}` : currentUser.id;
             
             const updatePayload = [{
                 id: friendUser.id,

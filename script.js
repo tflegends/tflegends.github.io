@@ -1010,13 +1010,11 @@ async function handlePurchase(e) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(updatePayload)
         });
-
+        
         if (putResponse.ok) {
             showMessage(`Purchase successful! You received ${numberOfCards} new cards.`);
-            // Refresh user data to update the UI
-            fetchAndUpdateUserData();
-        } else {
-            showMessage('Purchase failed. Please try again.', true);
+            // Wait for the UI to be refreshed by fetchAndUpdateUserData
+            await fetchAndUpdateUserData();
         }
     } catch (error) {
         console.error('Purchase error:', error);
